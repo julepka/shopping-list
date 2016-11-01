@@ -16,12 +16,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        let center: NSNotificationCenter = NSNotificationCenter.defaultCenter()
+        center.addObserver(self, selector: #selector(keyboardWillShow(_:)), name: UIKeyboardWillShowNotification, object: nil)
+        center.addObserver(self, selector: #selector(keyboardWillHide(_:)), name: UIKeyboardWillHideNotification, object: nil)
+
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -32,6 +40,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         } else {
             let cell = tableView.dequeueReusableCellWithIdentifier("AddItemTableViewCell") as! AddItemTableViewCell
             cell.delegate = self
+            cell.addDoneButtonOnKeyboard()
             return cell
         }
     }
@@ -54,7 +63,27 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: data.count-1, inSection: 0)], withRowAnimation: .Automatic)
         tableView.endUpdates()
         sender.textField.text = ""
-        sender.textField.resignFirstResponder()
+        self.tableView.scrollRectToVisible(sender.frame, animated: true)
+        //sender.textField.resignFirstResponder()
+    }
+    
+    func keyboardWillShow(notification: NSNotification) {
+        let keyboardSize = (notification.userInfo![UIKeyboardFrameBeginUserInfoKey] as! NSValue).CGRectValue()
+        let firstResponder = UIResponder.getCurrentFirstResponder() as! UIView
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardSize.height, right: 0)
+        self.tableView.contentInset = contentInsets
+        self.tableView.scrollIndicatorInsets = contentInsets
+        var aRect = self.view.frame
+        aRect.size.height -= keyboardSize.height
+        if !CGRectContainsPoint(aRect, firstResponder.frame.origin) {
+            self.tableView.scrollRectToVisible(firstResponder.frame, animated: true)
+        }
+        
+    }
+    
+    func keyboardWillHide(aNotification: NSNotification) {
+        let contentInsets = UIEdgeInsetsZero
+        self.tableView.contentInset = contentInsets
+        self.tableView.scrollIndicatorInsets = contentInsets
     }
 }
-

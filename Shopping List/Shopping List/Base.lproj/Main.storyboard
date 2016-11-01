@@ -57,7 +57,7 @@
                                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Add new item..." textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="FFm-eY-RuO">
                                                     <rect key="frame" x="8" y="8" width="272" height="27"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                    <textInputTraits key="textInputTraits"/>
+                                                    <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                                     <connections>
                                                         <outlet property="delegate" destination="dLU-be-YpU" id="7vp-Ef-RjF"/>
                                                     </connections>
@@ -86,7 +86,9 @@
                                     <constraint firstAttribute="height" constant="64" id="USe-Jo-STF"/>
                                 </constraints>
                                 <items>
-                                    <navigationItem title="Shopping List" id="4cL-Gz-cty"/>
+                                    <navigationItem title="Shopping List" id="4cL-Gz-cty">
+                                        <barButtonItem key="rightBarButtonItem" title="Clear" id="GZF-QU-IUP"/>
+                                    </navigationItem>
                                 </items>
                             </navigationBar>
                         </subviews>

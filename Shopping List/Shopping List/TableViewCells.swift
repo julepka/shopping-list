@@ -24,6 +24,7 @@ protocol AddItemTableViewCellDelegate: class {
 }
 
 class AddItemTableViewCell: UITableViewCell, UITextFieldDelegate {
+    
     @IBOutlet var textField: UITextField!
     
     var delegate: AddItemTableViewCellDelegate?
@@ -31,5 +32,25 @@ class AddItemTableViewCell: UITableViewCell, UITextFieldDelegate {
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         delegate?.didFinishTextEditing(self)
         return true
+    }
+    
+    func addDoneButtonOnKeyboard() {
+        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
+        let done: UIBarButtonItem  = UIBarButtonItem(title: "Close", style: .Plain, target: self, action: #selector(doneButtonAction))
+        
+        var items = [UIBarButtonItem]()
+        items.append(flexSpace)
+        items.append(done)
+        
+        doneToolbar.items = items
+        doneToolbar.sizeToFit()
+        
+        textField.inputAccessoryView = doneToolbar
+    }
+    
+    func doneButtonAction() {
+        self.textField.text = ""
+        self.textField.resignFirstResponder()
     }
 }
