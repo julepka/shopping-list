@@ -8,11 +8,12 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, AddItemTableViewCellDelegate {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, AddItemTableViewCellDelegate, ItemTableViewCellDelegate {
     
     @IBOutlet var tableView: UITableView!
     
     var data = ["first item", "second item", "third item"]
+    var editedCellIndex: Int? = nil
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,7 +72,25 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
-    func didFinishTextEditing(sender: AddItemTableViewCell) {
+    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [UITableViewRowAction]? {
+        if indexPath.row < data.count {
+            let delete = UITableViewRowAction(style: .Default, title: "Delete") { action, index in
+                self.data.removeAtIndex(indexPath.row)
+                tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+            }
+            let edit = UITableViewRowAction(style: .Normal, title: "Edit") { action, index in
+                let cell = tableView.cellForRowAtIndexPath(indexPath) as! ItemTableViewCell
+                cell.switchToEditMode()
+                self.tableView.setEditing(false, animated: true)
+                self.editedCellIndex = indexPath.row
+            }
+            return [delete, edit]
+        } else {
+            return []
+        }
+    }
+    
+    func didFinishTextEntering(sender: AddItemTableViewCell) {
         if(sender.textField.text == "") {
             sender.textField.resignFirstResponder()
         } else {
@@ -82,6 +101,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             (tableView.cellForRowAtIndexPath(NSIndexPath(forRow: data.count-1, inSection: 0)) as! ItemTableViewCell).checked = false
             sender.textField.text = ""
             self.tableView.scrollRectToVisible(sender.frame, animated: true)
+        }
+    }
+    
+    func didFinishTextEditing(sender: ItemTableViewCell) {
+        if let index = editedCellIndex {
+            data[index] = sender.label.text!
+            editedCellIndex = nil
         }
     }
     

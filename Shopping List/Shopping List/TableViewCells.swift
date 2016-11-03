@@ -9,18 +9,48 @@
 import Foundation
 import UIKit
 
-class ItemTableViewCell: UITableViewCell {
+protocol ItemTableViewCellDelegate: class {
+    func didFinishTextEditing(sender: ItemTableViewCell)
+}
+
+class ItemTableViewCell: UITableViewCell, UITextFieldDelegate {
     @IBOutlet var label: UILabel!
+    var editTextField: UITextField!
+    
+    var delegate: ItemTableViewCellDelegate?
     
     var checked = false {
         didSet {
             self.accessoryType = checked ? .Checkmark : .None
+            self.label.textColor = checked ? UIColor.lightGrayColor() : UIColor.darkTextColor()
         }
+    }
+    
+    func switchToEditMode() {
+        label.hidden = true
+        editTextField = UITextField(frame: label.frame)
+        editTextField.delegate = self
+        editTextField.text = label.text!
+        self.addSubview(editTextField)
+        editTextField.becomeFirstResponder()
+        delegate?.didFinishTextEditing(self)
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        if let text = editTextField.text {
+            if text != "" {
+                label.text = text
+            }
+        }
+        editTextField.removeFromSuperview()
+        label.hidden = false
+        editTextField.resignFirstResponder()
+        return true
     }
 }
 
 protocol AddItemTableViewCellDelegate: class {
-    func didFinishTextEditing(sender: AddItemTableViewCell)
+    func didFinishTextEntering(sender: AddItemTableViewCell)
 }
 
 class AddItemTableViewCell: UITableViewCell, UITextFieldDelegate {
@@ -30,7 +60,8 @@ class AddItemTableViewCell: UITableViewCell, UITextFieldDelegate {
     var delegate: AddItemTableViewCellDelegate?
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        delegate?.didFinishTextEditing(self)
+        delegate?.didFinishTextEntering(self)
         return true
     }
 }
+

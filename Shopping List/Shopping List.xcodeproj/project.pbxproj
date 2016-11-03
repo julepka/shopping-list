@@ -59,10 +59,10 @@
 				55F565DC1DC808FA00FC28A1 /* AppDelegate.swift */,
 				55F565DE1DC808FA00FC28A1 /* ViewController.swift */,
 				55F565EE1DC812CD00FC28A1 /* TableViewCells.swift */,
+				55F565F21DC9508200FC28A1 /* Extentions.swift */,
 				55F565E01DC808FA00FC28A1 /* Main.storyboard */,
 				55F565E31DC808FA00FC28A1 /* Assets.xcassets */,
 				55F565E81DC808FA00FC28A1 /* Info.plist */,
-				55F565F21DC9508200FC28A1 /* Extentions.swift */,
 			);
 			path = "Shopping List";
 			sourceTree = "<group>";
@@ -282,6 +282,7 @@
 				55F565ED1DC808FA00FC28A1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
