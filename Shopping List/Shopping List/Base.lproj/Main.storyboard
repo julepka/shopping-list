@@ -87,7 +87,11 @@
                                 </constraints>
                                 <items>
                                     <navigationItem title="Shopping List" id="4cL-Gz-cty">
-                                        <barButtonItem key="rightBarButtonItem" title="Clear" id="GZF-QU-IUP"/>
+                                        <barButtonItem key="rightBarButtonItem" title="Clear" id="GZF-QU-IUP">
+                                            <connections>
+                                                <action selector="clearButtonPressed:" destination="BYZ-38-t0r" id="ZDU-Sd-WsS"/>
+                                            </connections>
+                                        </barButtonItem>
                                     </navigationItem>
                                 </items>
                             </navigationBar>

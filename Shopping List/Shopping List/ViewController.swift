@@ -31,6 +31,21 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
     }
+    
+    @IBAction func clearButtonPressed(sender: UIButton) {
+        var newData: [String] = []
+        var toDelete: [NSIndexPath] = []
+        for i in 0..<data.count {
+            let cell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: i, inSection: 0)) as! ItemTableViewCell
+            if cell.checked {
+                toDelete.append(NSIndexPath(forRow: i, inSection: 0))
+            } else {
+                newData.append(data[i])
+            }
+        }
+        self.data = newData
+        tableView.deleteRowsAtIndexPaths(toDelete, withRowAnimation: .Automatic)
+    }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.row < data.count {
@@ -40,7 +55,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         } else {
             let cell = tableView.dequeueReusableCellWithIdentifier("AddItemTableViewCell") as! AddItemTableViewCell
             cell.delegate = self
-            cell.addDoneButtonOnKeyboard()
             return cell
         }
     }
@@ -58,13 +72,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func didFinishTextEditing(sender: AddItemTableViewCell) {
-        data.append(sender.textField.text!)
-        tableView.beginUpdates()
-        tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: data.count-1, inSection: 0)], withRowAnimation: .Automatic)
-        tableView.endUpdates()
-        sender.textField.text = ""
-        self.tableView.scrollRectToVisible(sender.frame, animated: true)
-        //sender.textField.resignFirstResponder()
+        if(sender.textField.text == "") {
+            sender.textField.resignFirstResponder()
+        } else {
+            data.append(sender.textField.text!)
+            tableView.beginUpdates()
+            tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: data.count-1, inSection: 0)], withRowAnimation: .Automatic)
+            tableView.endUpdates()
+            (tableView.cellForRowAtIndexPath(NSIndexPath(forRow: data.count-1, inSection: 0)) as! ItemTableViewCell).checked = false
+            sender.textField.text = ""
+            self.tableView.scrollRectToVisible(sender.frame, animated: true)
+        }
     }
     
     func keyboardWillShow(notification: NSNotification) {
